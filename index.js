@@ -24,18 +24,19 @@ wss.on("connection", function (ws) {
             var nick = roomAndNick[1];
             var chat_msg = data.chatMsg;
             var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
-            // Broadcast to everyone else.
-            wss.clients.forEach(function each(client) {
-                if (/*client !== ws &&*/ client.readyState === WebSocketServer.OPEN) {
-                    ws.send(
-                            JSON.stringify({
-                                'type': 'chat',
-                                'roomAndNick': data.roomAndNick,
-                                'msg': response_to
-                            }), function () { }
-                    );
-                }
-            });
+            ws.send(wss.clients.length);
+// Broadcast to everyone else.
+//            wss.clients.forEach(function each(client) {
+//                if (/*client !== ws &&*/ client.readyState === WebSocketServer.OPEN) {
+//                    ws.send(
+//                            JSON.stringify({
+//                                'type': 'chat',
+//                                'roomAndNick': data.roomAndNick,
+//                                'msg': response_to
+//                            }), function () { }
+//                    );
+//                }
+//            });
 
 
             // ws.send('petehant', function() {  })
