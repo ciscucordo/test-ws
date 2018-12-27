@@ -20,6 +20,8 @@ wss.on('connection', function (ws) {
 
     clients.push(ws);
 
+    ws.send(clients);
+
     ws.on('message', function (message) {
         console.log('received: %s', message);
         dispatch(ws, message);
