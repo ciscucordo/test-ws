@@ -45,7 +45,7 @@ wss.on("connection", function(ws) {
             ws.send(
                     JSON.stringify({
                         'type': 'chat',
-                        'roomAndNick': roomAndNick,
+                        'roomAndNick': data.roomAndNick,
                         'msg': response_to
                     }), function() {  }
             );
