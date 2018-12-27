@@ -20,21 +20,24 @@ wss.on("connection", function(ws) {
         // Broadcast to everyone else.
         // wss.clients.forEach(function each(client) {
         //  if (/*client !== ws &&*/ client.readyState === WebSocketServer.OPEN) {
-            var roomAndNick = split(':', data.roomAndNick);
-            var room = roomAndNick[0];
-            var nick = roomAndNick[1];
-            var chat_msg = data.chat_msg;
-            var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
-            ws.send({
-                'type': 'chat',
-                'roomAndNick': data.roomAndNick,
-                'msg': response_to
-            });
+//            var roomAndNick = split(':', data.roomAndNick);
+//            var room = roomAndNick[0];
+//            var nick = roomAndNick[1];
+//            var chat_msg = data.chat_msg;
+//            var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
+//            ws.send({
+//                'type': 'chat',
+//                'roomAndNick': data.roomAndNick,
+//                'msg': response_to
+//            });
             
         //  }
         //});
-        
-        // ws.send('petehant', function() {  })
+        if (data.type === 'chat') {
+            ws.send('petehant', function() {  })
+        } else {
+            ws.send('que?');
+        }
     });
     
   
