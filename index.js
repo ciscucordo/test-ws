@@ -18,14 +18,16 @@ var clients = new Array();
 
 wss.on('connection', function (ws) {
 
-    clients.push(ws);
+    ws.send('jol');
 
-    ws.send(clients);
+    // clients.push(ws);
 
-    ws.on('message', function (message) {
-        console.log('received: %s', message);
-        dispatch(ws, message);
-    });
+    // ws.send(clients);
+
+    // ws.on('message', function (message) {
+    //     console.log('received: %s', message);
+        // dispatch(ws, message);
+    // });
 
     ws.on('close', function () {
         // chat.removeClient(ws);
