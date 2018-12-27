@@ -37,14 +37,11 @@ wss.on("connection", function(ws) {
         if (data.type === 'chat') {
             var roomAndNick = data.roomAndNick.split(':');
             
-            ws.send("Split? " + roomAndNick[0] + " " + roomAndNick[1]);
+            var room = roomAndNick[0];
+            var nick = roomAndNick[1];
             
+            ws.send('chat_msg?' + data.chatMsg + " " + room + " " + nick);
             
-//            var room = roomAndNick[0];
-//            var nick = roomAndNick[1];
-//            
-//            ws.send('chat_msg?' + data.chatMsg + " " + room + " " + nick);
-//            
 //            var chat_msg = data.chatMsg;
 //            var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
 //            ws.send(
