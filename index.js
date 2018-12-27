@@ -33,15 +33,16 @@ function dispatch(ws, message) {
     var type = message.type;
     switch (type) {
         case 'register':
-            registerClient(ws, message);
+            var client = {socket: ws, name: message.nick};
+            clients.push(client);
             break;
         case 'chat':
-            var roomAndNick = split(":", message.roomAndNick);
+            var roomAndNick = split(':', message.roomAndNick);
             var room = roomAndNick[0];
             var nick = roomAndNick[1];
             var chat_msg = message.chat_msg;
             // response_from = "<span style='color:#999'><h5>" + nick + "</h5><p>" + chat_msg + "</p><span>data i dia</span></span>";
-            var response_to = "<span><h5>" + nick + "</h5><p>" + chat_msg + "</p><span>data i dia</span></span>";
+            var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
             // Output
             //from->send(json_encode(array("type" => $type, "roomAndNick" => $data->roomAndNick, "msg" => $response_from)));
             for (var i = 0; i < clients.length; i++) {
@@ -57,11 +58,6 @@ function dispatch(ws, message) {
     }
 }
 
-// temporal!!!
-function registerClient(ws, client) {
-    var client = {socket: ws, name: client};
-    clients.push(client);
-}
 
 /*
  var chat = {
