@@ -36,17 +36,18 @@ wss.on("connection", function(ws) {
         data = JSON.parse(data);
         if (data.type === 'chat') {
             var roomAndNick = split(':', data.roomAndNick);
-            var room = roomAndNick[0];
-            var nick = roomAndNick[1];
-            var chat_msg = data.chat_msg;
-            var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
-            ws.send(
-                    JSON.stringify({
-                        'type': 'chat',
-                        'roomAndNick': roomAndNick,
-                        'msg': response_to
-                    }), function() {  }
-            );
+            ws.send('roomAndNick?' + roomAndNick);
+//            var room = roomAndNick[0];
+//            var nick = roomAndNick[1];
+//            var chat_msg = data.chat_msg;
+//            var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
+//            ws.send(
+//                    JSON.stringify({
+//                        'type': 'chat',
+//                        'roomAndNick': roomAndNick,
+//                        'msg': response_to
+//                    }), function() {  }
+//            );
             // ws.send('petehant', function() {  })
         } else {
             ws.send('que?' + data);
