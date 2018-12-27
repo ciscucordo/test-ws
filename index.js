@@ -35,7 +35,17 @@ wss.on("connection", function(ws) {
         //});
         data = JSON.parse(data);
         if (data.type === 'chat') {
-            ws.send('petehant', function() {  })
+            var roomAndNick = split(':', data.roomAndNick);
+            var room = roomAndNick[0];
+            var nick = roomAndNick[1];
+            var chat_msg = data.chat_msg;
+            var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
+            ws.send(JSON.stringify({
+                'type': 'chat',
+                'roomAndNick': data.roomAndNick,
+                'msg': response_to
+            }));
+            // ws.send('petehant', function() {  })
         } else {
             ws.send('que?' + data);
         }
