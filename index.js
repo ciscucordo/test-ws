@@ -40,11 +40,13 @@ wss.on("connection", function(ws) {
             var nick = roomAndNick[1];
             var chat_msg = data.chat_msg;
             var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
-            ws.send(JSON.stringify({
-                'type': 'chat',
-                'roomAndNick': data.roomAndNick,
-                'msg': response_to
-            }));
+            ws.send(
+                    JSON.stringify({
+                        'type': 'chat',
+                        'roomAndNick': roomAndNick,
+                        'msg': response_to
+                    }), function() {  }
+            );
             // ws.send('petehant', function() {  })
         } else {
             ws.send('que?' + data);
