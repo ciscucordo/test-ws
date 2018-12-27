@@ -1,26 +1,135 @@
-var WebSocketServer = require("ws").Server;
-var http = require("http");
-var express = require("express")
-var app = express()
-var port = process.env.PORT || 5000
+var WebSocketServer = require('ws').Server;
+var http = require('http');
+var express = require('express');
+var app = express();
+var port = process.env.PORT || 5000;
 
-app.use(express.static(__dirname + "/"))
+app.use(express.static(__dirname + '/'));
 
-var server = http.createServer(app)
-server.listen(port)
+var server = http.createServer(app);
+server.listen(port);
 
-console.log("http server listening on %d", port)
+console.log("http server listening on %d", port);
 
-var wss = new WebSocketServer({server: server})
-console.log("websocket server created")
+var wss = new WebSocketServer({server: server});
+console.log("websocket server created");
 
-wss.on("connection", function(ws) {
-  //example
-  ws.send(JSON.stringify(new Date()), function() {  })
-  
-  console.log("websocket connection open")
 
-  ws.on("close", function() {
-    console.log("websocket connection close")
-  })
-})
+var chat = {
+    clients: new Array(),
+
+    run: function () {
+        wss.on('connection', function (ws) {
+
+            ws.on('message', function (message) {
+                console.log('received: %s', message);
+                chat.dispatch(ws, message);
+            });
+
+            ws.on('close', function () {
+                chat.removeClient(ws);
+                chat.updateUserListOnClients();
+            });
+        });
+
+    },
+
+    removeClient: function (ws) {
+        for (i = 0; i < chat.clients.length; i++) {
+            if (chat.clients[i].socket === ws) {
+                chat.clients.splice(i, 1);
+                console.log('remove client');
+            }
+        }
+    },
+
+    registerClient: function (ws, client) {
+        var client = {socket: ws, name: client};
+        chat.clients.push(client);
+        chat.updateUserListOnClients();
+    },
+
+    broadcast: function (message, fromSocket) {
+        var user = chat.getClientName(fromSocket);
+        chat.broadcastCommand(user + ': ' + message);
+    },
+
+    updateUserListOnClients: function () {
+        var userList = new Array();
+        for (i = 0; i < chat.clients.length; i++) {
+            userList.push(chat.clients[i].name);
+        }
+        console.log(userList.concat());
+        chat.broadcastCommand('/updateUserList ' + userList.concat());
+    },
+
+    broadcastCommand: function (cmd) {
+        for (i = 0; i < chat.clients.length; i++) {
+            try {
+                chat.clients[i].socket.send(cmd);
+            } catch (error) {
+                chat.clients.splice(i, 1);
+                console.log(error);
+            }
+
+        }
+    },
+
+    getClientName: function (ws) {
+        for (i = 0; i < chat.clients.length; i++) {
+            if (chat.clients[i].socket === ws) {
+                return chat.clients[i].name;
+            }
+        }
+    },
+
+    dispatch: function (ws, message) {
+        var type = message.type;
+        switch (type) {
+            case 'chat':
+                roomAndNick = split(":", message.roomAndNick);
+                room = roomAndNick[0];
+                nick = roomAndNick[1];
+                chat_msg = message.chat_msg;
+                // response_from = "<span style='color:#999'><h5>" + nick + "</h5><p>" + chat_msg + "</p><span>data i dia</span></span>";
+                response_to = "<span><h5>" + nick + "</h5><p>" + chat_msg + "</p><span>data i dia</span></span>";
+                // Output
+                //from->send(json_encode(array("type" => $type, "roomAndNick" => $data->roomAndNick, "msg" => $response_from)));
+                for (var i = 0; i < chat.clients.length; i++) {
+                    // if (chat.clients[i].socket === ws) {
+                        ws.send({
+                            'type': type,
+                            'roomAndNick': roomAndNick,
+                            'msg': response_to
+                        });
+                    // }
+                }
+                break;
+        }
+/*
+        var cmd = '';
+        var param = '';
+
+        if (message.indexOf('/') === 0) {
+            cmd = message.split(' ')[0];
+            param = message.replace(cmd, '');
+
+        }
+
+        switch (cmd) {
+            case '/broadcast':
+                chat.broadcast(param, ws);
+                break;
+            case '/connect':
+                var msg = param.replace(' ', '').replace(/(<([^>]+)>)/ig, "");
+                if (msg != '') {
+                    chat.registerClient(ws, msg);
+                }
+                break;
+        }
+*/
+    }
+
+};
+
+chat.run();
