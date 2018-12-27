@@ -16,12 +16,14 @@
     </style>
 
     <script>
-      var host = 'ws://test-ws-aaonline.herokuapp.com';
+      var host = 'ws://test-ws-aaonline.herokuapp.com/';
       //var host = location.origin.replace(/^http/, 'ws')
       var ws = new WebSocket(host);
       ws.onmessage = function (event) {
+          alert(event);
+        console.log(event.data, 'ok: ', event && event.data);
         var li = document.createElement('li');
-        li.innerHTML = JSON.parse(event.data);
+        li.innerHTML = event.data; //JSON.parse(event.data);
         document.querySelector('#pings').appendChild(li);
       };
     </script>
