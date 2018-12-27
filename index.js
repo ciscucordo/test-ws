@@ -36,7 +36,7 @@ wss.on("connection", function(ws) {
         if (data.type === 'chat') {
             ws.send('petehant', function() {  })
         } else {
-            ws.send('que?');
+            ws.send('que?' + data);
         }
     });
     
