@@ -35,7 +35,7 @@ wss.on("connection", function(ws) {
         //});
         data = JSON.parse(data);
         if (data.type === 'chat') {
-            var roomAndNick = split(':', data.roomAndNick);
+            var roomAndNick = data.roomAndNick.split(':');
             
             ws.send("Split? " + roomAndNick[0] + " " + roomAndNick[1]);
             
