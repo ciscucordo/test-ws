@@ -48,7 +48,7 @@ wss.on("connection", function (ws) {
 //            });
 
 
-            // ws.send('petehant', function() {  })
+            ws.send('petehant', function() {  })
         } else {
             ws.send('que?' + data);
         }
