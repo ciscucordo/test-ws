@@ -17,7 +17,17 @@ console.log("websocket server created")
 wss.on("connection", function(ws) {
   
     ws.on('message', function (message) {
-        ws.send('petehant', function() {  })
+        var roomAndNick = split(':', message.roomAndNick);
+        var room = roomAndNick[0];
+        var nick = roomAndNick[1];
+        var chat_msg = message.chat_msg;
+        var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
+        ws.send({
+            'type': 'chat',
+            'roomAndNick': roomAndNick,
+            'msg': response_to
+        });
+        // ws.send('petehant', function() {  })
     });
     
   
@@ -27,3 +37,33 @@ wss.on("connection", function(ws) {
     console.log("websocket connection close")
   })
 })
+
+
+function dispatch(ws, message) {
+    var type = message.type;
+    switch (type) {
+        case 'register':
+            var client = {socket: ws, name: message.nick};
+            // clients.push(client);
+            break;
+        case 'chat':
+            var roomAndNick = split(':', message.roomAndNick);
+            var room = roomAndNick[0];
+            var nick = roomAndNick[1];
+            var chat_msg = message.chat_msg;
+            // response_from = "<span style='color:#999'><h5>" + nick + "</h5><p>" + chat_msg + "</p><span>data i dia</span></span>";
+            var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
+            // Output
+            //from->send(json_encode(array("type" => $type, "roomAndNick" => $data->roomAndNick, "msg" => $response_from)));
+            //for (var i = 0; i < clients.length; i++) {
+                // if (chat.clients[i].socket === ws) {
+                ws.send({
+                    'type': type,
+                    'roomAndNick': roomAndNick,
+                    'msg': response_to
+                });
+                // }
+            //}
+            break;
+    }
+}
