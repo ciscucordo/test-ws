@@ -14,53 +14,40 @@ console.log("http server listening on %d", port)
 var wss = new WebSocketServer({server: server})
 console.log("websocket server created")
 
-wss.on("connection", function(ws) {
-  
+wss.on("connection", function (ws) {
+
     ws.on('message', function (data) {
-        // Broadcast to everyone else.
-        // wss.clients.forEach(function each(client) {
-        //  if (/*client !== ws &&*/ client.readyState === WebSocketServer.OPEN) {
-//            var roomAndNick = split(':', data.roomAndNick);
-//            var room = roomAndNick[0];
-//            var nick = roomAndNick[1];
-//            var chat_msg = data.chat_msg;
-//            var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
-//            ws.send({
-//                'type': 'chat',
-//                'roomAndNick': data.roomAndNick,
-//                'msg': response_to
-//            });
-            
-        //  }
-        //});
         data = JSON.parse(data);
         if (data.type === 'chat') {
             var roomAndNick = data.roomAndNick.split(':');
-            
             var room = roomAndNick[0];
             var nick = roomAndNick[1];
-            
             var chat_msg = data.chatMsg;
             var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
-            ws.send(
-                    JSON.stringify({
-                        'type': 'chat',
-                        'roomAndNick': data.roomAndNick,
-                        'msg': response_to
-                    }), function() {  }
-            );
+            // Broadcast to everyone else.
+            wss.clients.forEach(function each(client) {
+                if (/*client !== ws &&*/ client.readyState === WebSocketServer.OPEN) {
+                    ws.send(
+                            JSON.stringify({
+                                'type': 'chat',
+                                'roomAndNick': data.roomAndNick,
+                                'msg': response_to
+                            }), function () { }
+                    );
+                }
+            });
+
+
             // ws.send('petehant', function() {  })
         } else {
             ws.send('que?' + data);
         }
     });
-    
-  
-  console.log("websocket connection open")
+    console.log("websocket connection open")
 
-  ws.on("close", function() {
-    console.log("websocket connection close")
-  })
+    ws.on("close", function () {
+        console.log("websocket connection close")
+    })
 })
 
 
@@ -81,13 +68,13 @@ function dispatch(ws, message) {
             // Output
             //from->send(json_encode(array("type" => $type, "roomAndNick" => $data->roomAndNick, "msg" => $response_from)));
             //for (var i = 0; i < clients.length; i++) {
-                // if (chat.clients[i].socket === ws) {
-                ws.send({
-                    'type': type,
-                    'roomAndNick': roomAndNick,
-                    'msg': response_to
-                });
-                // }
+            // if (chat.clients[i].socket === ws) {
+            ws.send({
+                'type': type,
+                'roomAndNick': roomAndNick,
+                'msg': response_to
+            });
+            // }
             //}
             break;
     }
