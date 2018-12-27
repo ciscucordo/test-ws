@@ -14,6 +14,15 @@ console.log("http server listening on %d", port)
 var wss = new WebSocketServer({server: server})
 console.log("websocket server created")
 
+// Broadcast to all.
+wss.broadcast = function broadcast(data) {
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocketServer.OPEN) {
+      client.send(data);
+    }
+  });
+};
+
 wss.on("connection", function (ws) {
 
     ws.on('message', function (data) {
@@ -24,19 +33,19 @@ wss.on("connection", function (ws) {
             var nick = roomAndNick[1];
             var chat_msg = data.chatMsg;
             var response_to = '<span><h5>' + nick + '</h5><p>' + chat_msg + '</p><span>data i dia</span></span>';
-            ws.send(wss.clients.length);
+            
 // Broadcast to everyone else.
-//            wss.clients.forEach(function each(client) {
-//                if (/*client !== ws &&*/ client.readyState === WebSocketServer.OPEN) {
-//                    ws.send(
-//                            JSON.stringify({
-//                                'type': 'chat',
-//                                'roomAndNick': data.roomAndNick,
-//                                'msg': response_to
-//                            }), function () { }
-//                    );
-//                }
-//            });
+            wss.clients.forEach(function each(client) {
+                if (client !== ws && client.readyState === WebSocketServer.OPEN) {
+                    ws.send(
+                            JSON.stringify({
+                                'type': 'chat',
+                                'roomAndNick': data.roomAndNick,
+                                'msg': response_to
+                            }), function () { }
+                    );
+                }
+            });
 
 
             // ws.send('petehant', function() {  })
