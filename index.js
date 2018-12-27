@@ -87,12 +87,12 @@ var chat = {
         var type = message.type;
         switch (type) {
             case 'chat':
-                roomAndNick = split(":", message.roomAndNick);
-                room = roomAndNick[0];
-                nick = roomAndNick[1];
-                chat_msg = message.chat_msg;
+                var roomAndNick = split(":", message.roomAndNick);
+                var room = roomAndNick[0];
+                var nick = roomAndNick[1];
+                var chat_msg = message.chat_msg;
                 // response_from = "<span style='color:#999'><h5>" + nick + "</h5><p>" + chat_msg + "</p><span>data i dia</span></span>";
-                response_to = "<span><h5>" + nick + "</h5><p>" + chat_msg + "</p><span>data i dia</span></span>";
+                var response_to = "<span><h5>" + nick + "</h5><p>" + chat_msg + "</p><span>data i dia</span></span>";
                 // Output
                 //from->send(json_encode(array("type" => $type, "roomAndNick" => $data->roomAndNick, "msg" => $response_from)));
                 for (var i = 0; i < chat.clients.length; i++) {
