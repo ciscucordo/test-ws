@@ -19,7 +19,7 @@ wss.on("connection", function(ws) {
     ws.on('message', function (data) {
         // Broadcast to everyone else.
         wss.clients.forEach(function each(client) {
-          //if (client !== ws && client.readyState === WebSocketServer.OPEN) {
+          if (/*client !== ws &&*/ client.readyState === WebSocketServer.OPEN) {
             var roomAndNick = split(':', data.roomAndNick);
             var room = roomAndNick[0];
             var nick = roomAndNick[1];
@@ -31,7 +31,7 @@ wss.on("connection", function(ws) {
                 'msg': response_to
             });
             
-          //}
+          }
         });
         
         // ws.send('petehant', function() {  })
