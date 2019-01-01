@@ -30,6 +30,7 @@ wss.on("connection", function (ws) {
                             'type': data.type,
                             'room': data.room,
                             'msg': data.chatMsg,
+                            'datetime': data.datetime
                             // 'numClients': clients.length + ''
                         }), function () { }
                 );
