@@ -22,7 +22,7 @@ wss.on("connection", function (ws) {
 
     ws.on('message', function (data) {
         data = JSON.parse(data);
-        if (data.type === 'chat') {
+        // if (data.type === 'chat') {
             for (var i = 0; i < clients.length; i++) {
                 var client = clients[i];
                 client.send(
@@ -51,9 +51,9 @@ wss.on("connection", function (ws) {
 
 
             // ws.send('petehant', function () { })
-        } else {
-            ws.send('que?' + data);
-        }
+        // } else {
+        //     ws.send('que?' + data);
+        // }
     });
     console.log("websocket connection open");
 
